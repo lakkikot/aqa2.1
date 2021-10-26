@@ -48,4 +48,30 @@ class AppOrderTest {
         assertEquals("Ваша заявка успешно отправлена! Наш менеджер свяжется с вами в ближайшее время.", text.trim());
     }
 
+
+    @Test
+    void shouldShowErrorMsgIfNameIsIncorrect() {
+        driver.get("http://localhost:9999/");
+        WebElement form = driver.findElement(By.cssSelector(".form"));
+        form.findElement(By.cssSelector("[name='name']")).sendKeys("Name");
+        form.findElement(By.cssSelector("[name='phone']")).sendKeys("+79270000000");
+        form.findElement(By.cssSelector(".checkbox")).click();
+        form.findElement(By.cssSelector(".button")).click();
+        String text = form.findElement(By.cssSelector("[data-test-id='name'] .input__sub")).getText();
+        assertEquals("Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы.", text.trim());
+    }
+
+
+    @Test
+    void shouldShowErrorMsgIfTelWithoutPlus() {
+        driver.get("http://localhost:9999/");
+        WebElement form = driver.findElement(By.cssSelector(".form"));
+        form.findElement(By.cssSelector("[name='name']")).sendKeys("Василий");
+        form.findElement(By.cssSelector("[name='phone']")).sendKeys("792700000000");
+        form.findElement(By.cssSelector(".checkbox")).click();
+        form.findElement(By.cssSelector(".button")).click();
+        String text = form.findElement(By.cssSelector("[data-test-id='phone'] .input__sub")).getText();
+        assertEquals("Телефон указан неверно. Должно быть 11 цифр, например, +79012345678.", text.trim());
+    }
+
 }
